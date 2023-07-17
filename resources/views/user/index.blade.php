@@ -5,6 +5,12 @@
 
 <!-- Responsive datatable examples -->
 <link href="{{ asset('plugins/datatables/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+<style>
+    .adjust tr td{
+   padding: 5px !important;
+   margin: 0 !important;
+ }
+ </style>
 @endsection
 @section('content')
      <!-- Page-Title -->
@@ -16,9 +22,11 @@
             <div class="card p-0">
                 <div class="card-body pb-2">
                     <div class="table-responsive">
-                        <table id="datatable" class="table table-bordered st-table table-hover dt-responsive nowrap" 
+                        <table id="datatable" class="adjust table table-bordered st-table table-hover dt-responsive nowrap" 
                             data-url="{{ route('authorize.user.list') }}"
-                            data-url-edit="{{ route("authorize.user.edit",[0]) }}">
+                            data-url-edit="{{ route("authorize.user.edit",[0]) }}"
+                            data-url-assign="{{ route("authorize.user.assign",[0]) }}"
+                            >
                             <thead class="st-header-table">
                                 <tr>
                                     <th></th>
@@ -37,7 +45,7 @@
            </div> 
         </div>
     </div> 
-
+{{-- @include('modal.viewMyAsset') --}}
 @endsection
 @section('moreJs')
    <!-- Required datatable js -->
@@ -47,7 +55,7 @@
    <script src="{{ asset('plugins/datatables/dataTables.responsive.min.js') }}"></script>
    <script src="{{ asset('plugins/datatables/responsive.bootstrap4.min.js') }}"></script>
     <script>
-       
+        let   assignedAccountTable  = $("#assignedAccountTable")
         const tbl = Config.tableData.DataTable({
             "serverSide": true,
             paging:true,
@@ -93,13 +101,28 @@
                                     elementType:'link',
                                     url: Config.tableData.attr("data-url-edit").split('/0')[0]+"/"+data.id, 
                                 },
+                                {
+                                    text:'Accountability',
+                                    icon:'<i class="fas fa-tags"></i>',
+                                    elementType:'link',
+                                    url: Config.tableData.attr("data-url-assign").split('/0')[0]+"/"+data.id,
+                                },
                             ])
-                            // console.log(Config.tableData.attr("data-url-edit"));
                         }
                     },
                 ]
         })
 
+        $(document).on('click',"button[name=viewMyAsset]",function(){
+              $("#modalViewMyAsset").modal("show")
+              viewMyAsset($(this).val())
+        })
 
+
+        const viewMyAsset = (id) =>{
+           
+        }
+
+        
     </script>
 @endsection

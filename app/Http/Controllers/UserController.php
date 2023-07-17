@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Accountability;
 use App\Models\Department;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+
+    protected $userService;
+
+    public function  __construct(UserService $userService){
+        $this->userService = $userService;
+    }
+
     public function index(){
 
         return view('user.index');
@@ -36,13 +45,13 @@ class UserController extends Controller
         $request->validate([
             'name'       => 'required|max:50',
             // 'email'      => 'max:30|unique:users,email,'.$request->id,
-            'contact_no' => 'max:12',
-            'username'   => 'max:10|unique:users,username',
+            'contact_no' => 'string|min:11|max:11',
+            'username'   => 'max:10',//|unique:users,username
             'department' => 'required',
             'job_title'  => 'max:50'
         ]);
 
-        if (User::updateorcreate([
+        if (User::updateorcreate(['id'=>$request->id],[
             'name'          => $request->name,
             'email'         => $request->email,
             'contact_no'    => $request->contact_no,
@@ -58,42 +67,22 @@ class UserController extends Controller
     }
 
     public function list(Request $request){
+        
+        return $this->userService->list($request);
+       
+    }
 
-        $search = $request->query('search', array('value' => '', 'regex' => false));
-        $draw = $request->query('draw', 0);
-        $start = $request->query('start', 0);
-        $length = $request->query('length', 25);
-        $order = $request->query('order', array(1, 'asc'));        
-        $filter = $search['value'];
-        $query = User::select('users.name','users.id','username','departments.name as dep_name','contact_no','job_title','department_id')->leftjoin('departments','users.department_id','departments.id');
-        if (!empty($filter)) {  
-            $query->where('name', 'like', '%'.$filter.'%');
-            $query->where('departments.name', 'like', '%'.$filter.'%');
-            $query->where('contact_no', 'like', '%'.$filter.'%');
-            $query->where('job_title', 'like', '%'.$filter.'%');
-            $query->where('username', 'like', '%'.$filter.'%');
-        }
-        $recordsTotal = $query->count();
-        $query->take($length)->skip($start);
-        $json = array(
-            'draw' => $draw,
-            'recordsTotal' => $recordsTotal,
-            'recordsFiltered' => $recordsTotal,
-            'data' => [],
-        );
-        $audit = $query->get();
-        foreach ($audit as $value) {
-            $json['data'][] = [
-                'name'      => $value->name,
-                'username'  => $value->username,
-                'email'     => $value->email,
-                'dep_name'  => $value->dep_name,
-                'contact_no'=> $value->contact_no,
-                'job_title' => $value->job_title,
-                'id'        => $value->id
-            ];
-        }
-        return $json;
+    public function assign(User $user){
+        
+        return view('user.accountability',compact('user'));
+
+    }
+
+
+    public function assignedList(Request $request){
+        
+        return $this->userService->assignedList($request);
+
     }
     
 

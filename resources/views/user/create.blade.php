@@ -14,7 +14,7 @@
     <div class="card p-2">
         <div class="card-body pb-2">
             <form autocomplete="off" method="POST" action="{{ route('authorize.user.store') }}">@csrf
-                <input type="hidden" name="id" value="{{ $user->id ?? '' }}">
+                <input type="hidden" name="id" value="{{ $user->id }}">
                 <div class="row">
                     <div class="col-6">
                         @if (session()->has('msg'))
@@ -39,7 +39,7 @@
                             </div>
                             <div class="form-group col-6">
                                 <label for="">Contact No.</label>
-                                <input type="text" name="contact_no" class="form-control" id="" placeholder="Contact No." value="{{ $user->contact_no ?? old('contact_no') }}">
+                                <input type="text" name="contact_no" class="form-control" id="" placeholder="Contact No." value="{{ $user->contact_no ?? old('contact_no') }}" maxlength="11">
                                  @error('contact_no')
                                     <small class="form-text text-danger">{{ $message }}</small>
                                 @enderror

@@ -12,5 +12,13 @@ class AssetStatus extends Model
     protected $fillable=[
         'name'
     ];
+
+    public function asset(){
+        return $this->hasOne(Asset::class);
+    }
+
+    public function record(){
+        return $this->hasOne(Record::class);
+    }
     
 }

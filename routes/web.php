@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountabilityController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AMSController;
@@ -30,11 +31,20 @@ Route::middleware(['guest:web', 'preventBackHistory'])->name('auth.')->group(fun
 Route::middleware(['auth:web','preventBackHistory','auth.user'])->name('authorize.')->prefix('auth/')->group(function(){
     Route::get('/',  [AMSController::class, 'index'])->name('index');
 
-    //department
+    //assets
     Route::get('asset',  [AssetController::class, 'index'])->name('asset');
     Route::get('asset/create',  [AssetController::class, 'create'])->name('asset.create');
+    Route::get('asset/edit/{asset}',  [AssetController::class, 'edit'])->name('asset.edit');
     Route::post('asset/store',  [AssetController::class, 'store'])->name('asset.store');
+    Route::get('asset/list/',  [AssetController::class, 'list'])->name('asset.list');
     Route::get('asset/get-subcategory/{category}',  [AssetController::class, 'getSubCategory'])->name('asset.getsubcategory');
+    Route::get('asset/record/{asset}',  [AssetController::class, 'record'])->name('asset.record');
+    Route::post('asset/generate',  [AssetController::class, 'generate'])->name('asset.generate');
+    
+    //asset pullout
+    Route::get('asset/pullout',  function(){
+        return 'okey';
+    })->name('asset.pullout');
     
     
     Route::get('autoccomplete/{type}',  [AssetController::class, 'autocomplete'])->name('autocomplete');
@@ -66,6 +76,12 @@ Route::middleware(['auth:web','preventBackHistory','auth.user'])->name('authoriz
     Route::get('user/edit/{user}',  [UserController::class, 'edit'])->name('user.edit')->where('id', '[0-9]+');;
     Route::post('user/store',  [UserController::class, 'store'])->name('user.store');
     Route::get('user/list',  [UserController::class, 'list'])->name('user.list');
+    Route::get('user/assign/{user}',  [UserController::class, 'assign'])->name('user.assign');
+    Route::get('user/assigned-asset/list',  [UserController::class, 'assignedList'])->name('user.assign.list');
+
+    //Accountability
+    Route::post('accountability/store',  [AccountabilityController::class, 'store'])->name('accountability.store');
+    Route::get('accountability/print/{controlNo}',  [AccountabilityController::class, 'print'])->name('accountability.print');
 
     //signout
     Route::post('signout', [AuthController::class, 'signout'])->name('signout');

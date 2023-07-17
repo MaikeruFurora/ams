@@ -32,10 +32,52 @@ const Config = {
         
     },
 
+    selectData: (src) =>  {
+        return {
+             placeholder: 'Select an item',
+             ajax: {
+                 url: src,
+                 dataType: 'json',
+                 delay: 250,
+                 processResults: function (data) {
+                     return {
+                         results:  $.map(data, function (item) {
+                             return {
+                                 text: item.name,
+                                 id: item.id
+                             }
+                         })
+                     };
+                 },
+                 cache: true
+             }
+        }
+     },
+
+    loadToPrint:(url) =>{
+        $("<iframe>")             // create a new iframe element
+            .hide()               // make it invisible
+            .attr("src", url)     // point the iframe to the page you want to print
+            .appendTo("body");    // add iframe to the DOM to cause it to load the page
+    },
+
+    date:      new Date(),
+
     tableData:    $("table[id=datatable]"),
 
     FormSupplier: $("#FormSupplier"),
 
-    FormStatus:   $("#FormStatus")
+    FormStatus:   $("#FormStatus"),
+
+    token:        $("meta[name=_token]").attr('content'),    
 
 }
+$('input').on('click',function(){
+    $(this).select();
+})
+
+$('.amount').number( true, 4 );
+
+$('textarea').on('click',function(){
+    $(this).select();
+})

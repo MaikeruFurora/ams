@@ -20,7 +20,7 @@
         <link href="{{ asset('assets/css/icons.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet" type="text/css" />
-
+        <link href="{{ asset('plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
         <style>
             .st-table{
                 font-size: 11px;
@@ -109,10 +109,11 @@
                                     <a href="{{ route('authorize.index') }}"><i class="dripicons-graph-pie"></i> Main</a>
                                 </li>
                                 <li class="has-submenu">
-                                    <a href="{{ route('authorize.asset') }}"><i class="dripicons-view-thumb"></i> Assets</a>
-                                </li>
-                                <li class="has-submenu">
-                                    <a href="#"><i class="dripicons-view-thumb"></i> Tracking</a>
+                                    <a href="#"><i class="dripicons-view-thumb"></i> Assets <i class="mdi mdi-chevron-down mdi-drop"></i></a>
+                                    <ul class="submenu">
+                                        <li><a href="{{ route('authorize.asset') }}"><i class="fas fa-ethernet mr-2"></i> Assets</a></li>
+                                        <li><a href="{{ route('authorize.asset.pullout') }}"><i class="fas fa-network-wired mr-2"></i> Pullout Asset</a></li>
+                                    </ul>
                                 </li>
                                 <li class="has-submenu">
                                     <a href="{{ route('authorize.user') }}"><i class="fas fa-user-shield"></i> Employee</a>
@@ -120,10 +121,10 @@
                                 <li class="has-submenu">
                                     <a href="#"><i class="dripicons-gear" style="color: #2a58a7;"></i> Configure<i class="mdi mdi-chevron-down mdi-drop"></i></a>
                                     <ul class="submenu">
-                                            <li><a href="{{ route('authorize.department') }}"><i class="fas fa-ethernet mr-2"></i> Department</a></li>
-                                            <li><a href="{{ route('authorize.category') }}"><i class="fas fa-network-wired mr-2"></i> Category</a></li>
-                                            <li><a href="{{ route('authorize.sub.category') }}"><i class="fas fa-network-wired mr-2"></i> Sub Category</a></li>
-                                            {{-- <li><a href=""><i class="dripicons-arrow-thin-right mr-2" style="font-size:10px"></i>Types</a></li> --}}
+                                        <li><a href="{{ route('authorize.department') }}"><i class="fas fa-ethernet mr-2"></i> Department</a></li>
+                                        <li><a href="{{ route('authorize.category') }}"><i class="fas fa-network-wired mr-2"></i> Category</a></li>
+                                        <li><a href="{{ route('authorize.sub.category') }}"><i class="fas fa-network-wired mr-2"></i> Sub Category</a></li>
+                                        {{-- <li><a href=""><i class="dripicons-arrow-thin-right mr-2" style="font-size:10px"></i>Types</a></li> --}}
                                     </ul>
                                 </li>
                                 <li class="has-submenu">
@@ -165,8 +166,9 @@
         <script src="{{ asset('assets/js/modernizr.min.js') }}"></script>
         <script src="{{ asset('assets/js/waves.js') }}"></script>
         <script src="{{ asset('assets/js/jquery.slimscroll.js') }}"></script>
+        <script src="{{ asset('plugins/jquery-number/jquery.number.min.js') }}"></script>
+        <script src="{{ asset('plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
         <script src="{{ asset('assets/js/global.js') }}"></script>
-        
         @yield('moreJs')
         
         <!-- App js -->

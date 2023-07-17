@@ -14,4 +14,8 @@ class Department extends Model
         'head_id'
     ];
 
+    public function user(){
+        return $this->hasOne(User::class);
+    }
+
 }

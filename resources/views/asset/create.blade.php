@@ -4,7 +4,6 @@
 <link href="{{ asset('plugins/datatables/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 <!-- Responsive datatable examples -->
 <link href="{{ asset('plugins/datatables/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
-<link href="{{ asset('plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
 <!-- Alertify css -->
 <link href="{{ asset('plugins/alertify/css/alertify.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ asset('plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css">
@@ -75,7 +74,6 @@
 @include('modal.status')
 @endsection
 @section('moreJs')
-    <script src="{{ asset('plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
    <!-- Required datatable js -->
    <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
    <script src="{{ asset('plugins/datatables/dataTables.bootstrap4.min.js') }}"></script>
@@ -85,6 +83,7 @@
    <!-- Alertify js -->
    <script src="{{ asset('plugins/alertify/js/alertify.js') }}"></script>
    <script src="{{ asset('plugins/select2/select2.min.js') }}"></script>
+   
     <script>
         let   category        = $("select[name=category]")
         let   sub_category    = $("select[name=sub_category]")
@@ -131,31 +130,11 @@
         //     }
         // })
 
-        const selectData = (src) =>  {
-           return {
-                placeholder: 'Select an item',
-                ajax: {
-                    url: src,
-                    dataType: 'json',
-                    delay: 250,
-                    processResults: function (data) {
-                        return {
-                            results:  $.map(data, function (item) {
-                                return {
-                                    text: item.name,
-                                    id: item.id
-                                }
-                            })
-                        };
-                    },
-                    cache: true
-                }
-           }
-        }
+        
 
         const resetform = () => {
             category.val('').trigger('change')
-            sub_category.val('').trigger('change')
+            sub_category.html(`<option selected disabled value="">Choose...</option>`).trigger('change')
             FormCreate.find('input[name="qty"]').val('')
             $("#FormCreate *").prop("disabled", false);
             $("#FormAsset *").prop("disabled",false)
@@ -183,14 +162,12 @@
                                     aria-controls="nav-${i}"
                                     aria-selected="${(i==1)}">
                                 <i class="fas fa-tag mr-2" style="font-size: 9px"></i>
-                                ${FormCreate.find("select[name=sub_category] :selected").text()}
+                                ${FormCreate.find("select[name=sub_category] :selected").text().substring(0, 6)}..
                                 <b class="text-danger"><i class="fas fa-times-circle ml-2 removeTab" id="${i}"></i></b>
                                 </button>`
                             }
                             // ${(i!=0 || parseInt(FormCreate.find("input[name=qty]").val())==1)?`<b class="text-danger"><i class="fas fa-times-circle ml-2 removeTab" id="${i}"></i></b>`:''}
-            hold+=`<button class="nav-link border bg-success text-white" data-toggle="tab"
-                                type="button"
-                                role="tab"><b><i class="fas fa-plus-circle"></i></b></button>`
+            // hold+=`<button onclick="appendTab()"  class="nav-link border bg-success text-white" data-toggle="tab" type="button" role="tab"><b><i class="fas fa-plus-circle"></i></b></button>`
             hold+=`</div></nav>`
             hold+=`<div class="tab-content" id="nav-tabContent">`
                 for (let i = 0; i < num; i++) {
@@ -198,8 +175,7 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-4">
                                         <label for="">Asset Code</label>
-                                        <input type="text" class="form-control form-control-sm" name="asset_code[]" id="" maxlength="40">
-                                        <div class="text-danger asset_code">sasa</div>
+                                        <input type="text" class="form-control form-control-sm" name="asset_code[]" id="" maxlength="40" value="${Config.date.getFullYear()}AIM">
                                     </div>
                                     
                                     <div class="form-group col-md-4">
@@ -218,11 +194,11 @@
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label for="">Serial Number</label>
-                                                <input type="text" class="form-control form-control-sm" name="serial_number[]" id="" maxlength="40">
+                                                <input type="text" class="form-control form-control-sm" name="serial_no[]" id="" maxlength="40">
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label for="">Product Number</label>
-                                                <input type="text" class="form-control form-control-sm" name="product_number[]" id="" maxlength="40">
+                                                <input type="text" class="form-control form-control-sm" name="product_no[]" id="" maxlength="40">
                                             </div>
                                         </div>
                                     </div>
@@ -236,11 +212,11 @@
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label for="">Purchase Amount</label>
-                                        <input type="text" class="form-control form-control-sm" name="purchase_amount[]" id="" maxlength="40">
+                                        <input type="text" class="form-control form-control-sm amount" name="purchase_amount[]" id="" maxlength="40">
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label for="">Actual Amount</label>
-                                                <input type="text" class="form-control form-control-sm" name="actual_amount[]" id="">
+                                                <input type="text" class="form-control form-control-sm amount" name="actual_amount[]" id="">
                                             </div>
                                         </div>
                                     </div>
@@ -280,7 +256,7 @@
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label for="">UOM</label>
-                                                <input type="number" class="form-control form-control-sm" name="oum[]" id="" min="1" max="20">
+                                                <input type="number" class="form-control form-control-sm" name="uom[]" id="" min="1" max="20">
                                             </div>
                                         </div>
                                     </div>
@@ -335,19 +311,19 @@
          **/
         function initailizeSelect2(){
             $('.supplier').each(function(index, element) {
-                $(this).select2(selectData(autocompleteURL.val().split('Sample')[0]+'supplier'));
+                $(this).select2(Config.selectData(autocompleteURL.val().split('Sample')[0]+'supplier'));
             })
             $('.asset_status').each(function(index, element) {
-                $(this).select2(selectData(autocompleteURL.val().split('Sample')[0]+'status'));
+                $(this).select2(Config.selectData(autocompleteURL.val().split('Sample')[0]+'status'));
             });
-            
+            $('.amount').number( true, 4 );
             $(".datepicker").datepicker({
             toggleActive: true,
             autoclose: true
         })
         }
         
-        $("select[name=category]").select2(selectData(autocompleteURL.val().split('Sample')[0]+'category'))
+        $("select[name=category]").select2(Config.selectData(autocompleteURL.val().split('Sample')[0]+'category'))
 
         // creation supplier
 
@@ -413,10 +389,10 @@
                     $("#FormAsset *").prop("disabled",false)
                     alertify.okBtn("ok")
                 });
-                console.log(jqxHR.responseJSON.errors);
                 $.each(jqxHR.responseJSON.errors , function( key, value ) {
                     console.log(key);
-                   $("."+key).text("dsadada")
+                    // let elem = $("."+key)
+                    // elem.text("dsadada")
                 });
             })
         })
@@ -443,7 +419,7 @@
         })
 
         const appendTab = () =>{
-
+            console.log(tabArray[tabArray.length-1]);
         }
     
 
