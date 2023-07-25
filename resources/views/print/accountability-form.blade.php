@@ -120,11 +120,11 @@
                 </tr>
                 <tr>
                     <td>Employee Name</td>
-                    <td>: {{ $accountability->user->name }}</td>
+                    <td>: {{ $accountability->user->name ?? '' }}</td>
                 </tr>
                 <tr>
                     <td>Department | Position</td>
-                    <td>: {{ $accountability->user->department->name }} | {{ $accountability->user->job_title }}</td>
+                    <td>: {{ $accountability->user->department->name ?? '' }} | {{ $accountability->user->job_title ?? ''}}</td>
                 </tr>
           </table>
           <table width="100%">
@@ -144,11 +144,11 @@
             </tr>
             @foreach ($asset as $key => $item)
             <tr>
-              <td>{{ ++$key }}</td>
-              <td>{{ $item->asset->description }}</td>
-              <td>{{ $item->asset->serial_no }}</td>
-              <td>{{ $item->asset->asset_code }}</td>
-          </tr>
+                <td>{{ ++$key }}</td>
+                <td>{{ $item->asset->description ?? '' }}</td>
+                <td>{{ $item->asset->serial_no ?? '' }}</td>
+                <td>{{ $item->asset->asset_code ?? '' }}</td>
+            </tr>
             @endforeach
           </table>
           <b>NOTE: You may request an IT STAFF to assist you in confirming these specifications.</b>
@@ -162,11 +162,11 @@
                 <table class="m-5">
                     <tr>
                         <td>VENDOR</td>
-                        <td>: {{ $asset[0]->asset->supplier->name }}</td>
+                        <td>: {{ $asset[0]->asset->supplier->name ?? '' }}</td>
                     </tr>
                     <tr>
                         <td>PURCHASE DATE</td>
-                        <td>: {{ $asset[0]->asset->date_purchase }}</td>
+                        <td>: {{ $asset[0]->asset->date_purchase ?? ''}}</td>
                     </tr>
                     <tr>
                         <td>DESKTOP COST</td>

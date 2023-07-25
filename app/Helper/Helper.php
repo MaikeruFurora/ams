@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 
 class Helper{
 
+
+    const PULLOUT = 'pullout';
     public static function auditLog($type,$event){
 
         // return  DB::table('audits')->insert([
@@ -35,9 +37,9 @@ class Helper{
 
     public static function record($asset,$status,$user=null,$remarks){
         return Record::create([
-                'user_id'           => $user,
                 'asset_id'          => $asset,
                 'asset_status_id'   => $status,
+                'user_id'           => $user,
                 'remarks'           => $remarks,
         ]);
     }

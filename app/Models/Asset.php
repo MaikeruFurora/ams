@@ -17,6 +17,10 @@ class Asset extends Model
 
     public $guarded=[];
 
+    public function pullout(){
+        return $this->hasOne(Pullout::class);
+    }
+
     // protected $fillable=[
         //     'sub_category_id',
         //     'asset_status_id',

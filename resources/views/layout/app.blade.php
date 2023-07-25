@@ -109,11 +109,10 @@
                                     <a href="{{ route('authorize.index') }}"><i class="dripicons-graph-pie"></i> Main</a>
                                 </li>
                                 <li class="has-submenu">
-                                    <a href="#"><i class="dripicons-view-thumb"></i> Assets <i class="mdi mdi-chevron-down mdi-drop"></i></a>
-                                    <ul class="submenu">
-                                        <li><a href="{{ route('authorize.asset') }}"><i class="fas fa-ethernet mr-2"></i> Assets</a></li>
-                                        <li><a href="{{ route('authorize.asset.pullout') }}"><i class="fas fa-network-wired mr-2"></i> Pullout Asset</a></li>
-                                    </ul>
+                                    <a href="{{ route('authorize.asset') }}"><i class="dripicons-view-thumb"></i> Assets</a>
+                                </li>
+                                <li class="has-submenu">
+                                    <a href="{{ route('authorize.pullout') }}"><i class="dripicons-view-thumb"></i> Pullout</a>
                                 </li>
                                 <li class="has-submenu">
                                     <a href="{{ route('authorize.user') }}"><i class="fas fa-user-shield"></i> Employee</a>

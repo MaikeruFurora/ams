@@ -13,11 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('asset_statuses', function (Blueprint $table) {
+        Schema::create('pullouts', function (Blueprint $table) {
             $table->id();
-            $table->string('code',10);
-            $table->string('name',100);
-            $table->boolean('sttus')->default(1);
+            $table->unsignedBigInteger('asset_id');
+            $table->foreign('asset_id')->references('id')->on('assets');
+            $table->string('pullout_no');
+            $table->text('remarks');
+            $table->date('date_return')->nullable();
+            $table->date('date_recieved')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('asset_statuses');
+        Schema::dropIfExists('pullouts');
     }
 };

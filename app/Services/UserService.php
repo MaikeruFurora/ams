@@ -55,7 +55,7 @@ class UserService{
       $length = $request->query('length', 25);
       $order  = $request->query('order', array(1, 'asc'));        
       $filter = $search['value'];
-      $query  = Accountability::with(['asset']);
+      $query  = Accountability::with(['asset','asset.asset_status'])->where('user_id',$request->user );
       if (!empty($filter)) {  
           $query->where('asset.item_name', 'like', '%'.$filter.'%');
       }
@@ -71,13 +71,18 @@ class UserService{
       foreach ($audit as $value) {
           $json['data'][] = [
               'control_no'    => $value->control_no,
-              'asset_code'     => $value->asset->asset_code,
+              'asset_code'    => $value->asset->asset_code,
               'serial_no'     => $value->asset->serial_no,
               'product_no'    => $value->asset->product_no,
               'brand'         => $value->asset->brand,
               'item_name'     => $value->asset->item_name,
               'issued_at'     => $value->issued_at,
-              'id'            => $value->id
+              'id'            => $value->id,
+              'asset_id'      => $value->asset->id,
+              'user_id'       => $value->user_id,
+              'status_id'     => $value->asset->asset_status->id,
+              'status_code'   => $value->asset->asset_status->code,
+              'status'        => $value->asset->asset_status->name
           ];
       }
       return $json;

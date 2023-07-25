@@ -6,6 +6,8 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AMSController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\PulloutController;
+use App\Http\Controllers\StatusController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
@@ -40,6 +42,18 @@ Route::middleware(['auth:web','preventBackHistory','auth.user'])->name('authoriz
     Route::get('asset/get-subcategory/{category}',  [AssetController::class, 'getSubCategory'])->name('asset.getsubcategory');
     Route::get('asset/record/{asset}',  [AssetController::class, 'record'])->name('asset.record');
     Route::post('asset/generate',  [AssetController::class, 'generate'])->name('asset.generate');
+    Route::post('asset/change-status',  [AssetController::class, 'changeStatus'])->name('asset.change.status');
+
+
+    //pullout
+    Route::get('pullout',  [PulloutController::class, 'index'])->name('pullout');
+    Route::post('pullout/store',  [PulloutController::class, 'store'])->name('pullout.store');
+    Route::get('pullout/list',  [PulloutController::class, 'list'])->name('pullout.list');
+    Route::get('pullout/recieve',  [PulloutController::class, 'recieve'])->name('pullout.recieve');
+
+    //api for status
+    Route::get('status/list',[StatusController::class,'list'])->name('status.list');
+
     
     //asset pullout
     Route::get('asset/pullout',  function(){

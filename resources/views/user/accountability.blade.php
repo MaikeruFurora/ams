@@ -116,7 +116,8 @@
                         <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                             <div class="table-responsive mt-3">
                                 <table id="assignedAccountTable" class="table table-bordered table-sm"
-                                    data-url="{{ route("authorize.user.assign.list") }}" style="width: 100%">
+                                    data-url="{{ route("authorize.user.assign.list") }}"
+                                    data-status-url={{ route('authorize.status.list') }} style="width: 100%">
                                     <thead class="text-center text-white st-header-table">
                                         <tr>
                                             <th></th>
@@ -126,31 +127,30 @@
                                             <th>Item name</th>
                                             <th>Brand/Model</th>
                                             <th width="10%">Date Issued</th>
+                                            <th width="">Status</th>
+                                            <th width="7%">Action</th>
                                         </tr>
                                     </thead>
                                 </table>
-
-                            
                                 <div class="col-3">
                                     <form id="accountabilityForm" action="{{ route('authorize.accountability.print',['controlNo'=>'Sample']) }}">
-                                    <div class="input-group input-group-sm">
+                                        <div class="input-group input-group-sm">
                                             <select name="control_no" id="" class="custom-select custom-select-sm">
                                                 <option value=""></option>
                                             </select>
                                             <div class="input-group-append">
-                                                <button type="submit" class="btn btn-outline-secondary" type="button" id="button-addon2">Print</button>
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2">Print</button>
                                             </div>
                                         </div>
                                     </form>
-                                </div>
-
+                                </div> 
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-          
+            </div><!--card-->
         </div>
+        @include('modal.pullout',['assetStatus'=>$assetStatus])
 @endsection
 @section('moreJs')
    <!-- Required datatable js -->
@@ -171,7 +171,8 @@
         let   cardFooter            = $(".foot")
         let   accountabilityForm    = $("#accountabilityForm")
         let   selectControlNo       = $("select[name=control_no]")
-        let   _hold                 =`<option>Select Control No.</option>`
+        let   _hold                 = `<option>Select Control No.</option>`
+        let   FormPullout           = $("#FormPullout")
         // cardFooter.hide()
         let tbl = Config.tableData.DataTable({
             ordering: false,
@@ -290,20 +291,17 @@
         })
 
         
-        $(document).on('change','input[type="checkbox"]',function(){
-            if($(this).is(":checked")){
-                asset.push($(this).val());
-                asset.find(val=>val==$(this).val())
-            }else{
-                let index = asset.indexOf($(this).val())
-                asset.splice(index,1);
-            }
-            if (asset.length>0) {
-                cardFooter.show()
-            } else {
-                cardFooter.hide()
-            }
-        })
+        // $(document).on('change','input[type="checkbox"]',function(){
+        //     if($(this).is(":checked")){
+        //         asset.push($(this).val());
+        //         asset.find(val=>val==$(this).val())
+        //     }else{
+        //         let index = asset.indexOf($(this).val())
+        //         asset.splice(index,1);
+        //     }
+        //     accountabilityForm.find("button[name=pullout]").prop('disabled',!(asset.length>0))
+            
+        // })
 
         $('button[data-toggle="tab"]').on( 'shown.bs.tab', function (e) {
             // var target = $(e.target).attr("href"); // activated tab
@@ -345,7 +343,7 @@
                 }
             }],
             initComplete: function() {
-                var customer = assignTbl
+                var dd = assignTbl
                     .columns(1)
                     .data()
                     .eq(0)      // Reduce the 2D array into a 1D array of data
@@ -353,16 +351,18 @@
                     .unique()     // Reduce to unique values
                     .toArray();
 
-                    controlnoLists(customer);
+                    dd.forEach(val=>{
+                        _hold+=`<option value="${val}">${val}</option>`
+                    })
+
+                    selectControlNo.html(_hold)
             },
             columns:[
                 { 
                     orderable:false,
                     searchable: false,
-                    data:null,
-                    render:function(data){
-                        return `<input type="checkbox" class="form-check ml-2" style="margin-right:-15px" value="${data.id}">`
-                    }
+                    visible:false,
+                    data:'user_id'
                 },
                 { 
                     data:'control_no'
@@ -380,24 +380,63 @@
                     data:'brand'
                 },
                 { 
+                    data:'issued_at'
+                },
+                { 
+                    data:'status'
+                },
+                {
                     data:null,
                     render:function(data){
-                        return data.issued_at
+                        // console.log(data.status_code=='PULLOUT');
+                        return Config.dropdown([
+                                {
+                                    text:'Pullout',
+                                    name:'pullout',
+                                    icon:'<i class="fas fa-sync-alt"></i>',
+                                    elementType:'button',
+                                    value:data.asset_id,
+                                    disabled:data.status_code=='PULLOUT'
+                                },
+                            ])
                     }
-                },
+                }
             ]
         })
 
 
         const controlnoLists = (data) =>{
 
-            data.forEach(val=>{
-                _hold+=`<option value="${val}">${val}</option>`
-            })
-
-            selectControlNo.html(_hold)
             
         }
+
+        $(document).on('click','button[name=pullout]',function(){
+            let data =assignTbl.row( $(this).closest('tr') ).data();
+            console.log(data);
+            FormPullout.find("input[name=asset]").val($(this).val())
+            FormPullout.find("input[name=user]").val(data.user_id)
+            FormPullout.find("input[name=asset_code]").val(data.asset_code)
+            $("#modalstatusChange").modal("show")
+        })
+
+        FormPullout.on('submit',function(e){
+            e.preventDefault()
+            $.ajax({
+                url:FormPullout.attr('action'),
+                type:'POST',
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                cache: false,
+            }).done(function(data){
+                console.log(data);
+                FormPullout[0].reset()
+                assignTbl.ajax.reload()
+                $("#modalstatusChange").modal("hide")
+            }).fail(function(a,b,c){
+                console.log(a,b,c);
+            })
+        })
 
    </script>
 @endsection

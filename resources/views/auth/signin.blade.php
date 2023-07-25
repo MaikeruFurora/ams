@@ -30,7 +30,7 @@
             
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-lg-6">
+                    {{-- <div class="col-lg-6">
                         <div>
                             <div >
                                 <a href="index.html" class="logo logo-admin">
@@ -49,8 +49,8 @@
                                 <p><i class="mdi mdi-arrow-right text-primary mr-2"></i>If you continue to receive an error, please contact IT for assistance. </p>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-5 offset-lg-1">
+                    </div> --}}
+                    <div class="col-lg-5 offset-lg-3">
                         @if (session()->has('msg'))
                             <div class="alert alert-{{ session()->get('action') ?? 'success' }}" role="alert">
                                 <i class="fas fa-exclamation-triangle"></i> {{ session()->get('msg') }}

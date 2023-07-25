@@ -38,7 +38,7 @@
                                     <td rowspan="2" width="3%"></td>
                                     <td rowspan="2" width="5%">Action</td>
                                     <td rowspan="2">Asset Code</td>
-                                    <td class="border">Category</td>
+                                    <td class="border">Status</td>
                                     <td class="border">Category</td>
                                     <td class="border">Sub Category</td>
                                     <td class="border" rowspan="2">Item Name</td>
@@ -200,6 +200,13 @@
                                     url:'asset/edit/'+data.id,
                                     elementType:'a',
                                     value:data.id
+                                },
+                                {
+                                    text:'Record',
+                                    name:'record',
+                                    icon:'<i class="fas fa-history"></i>',
+                                    url:'asset/record/'+data.id,
+                                    elementType:'a',
                                 },
                             ])
                     }

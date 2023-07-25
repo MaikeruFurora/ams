@@ -14,7 +14,7 @@
     <div class="card p-2">
         <div class="card-body pb-2">
             <form autocomplete="off" method="POST" action="{{ route('authorize.user.store') }}">@csrf
-                <input type="hidden" name="id" value="{{ $user->id }}">
+                <input type="hidden" name="id" value="{{ $user->id ?? '' }}">
                 <div class="row">
                     <div class="col-6">
                         @if (session()->has('msg'))

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\Helper;
 use App\Models\Asset;
 use App\Models\AssetStatus;
 use App\Models\Category;
+use App\Models\Pullout;
 use App\Models\SubCategory;
 use App\Models\Supplier;
 use App\Services\AssetService;
@@ -12,6 +14,7 @@ use App\Services\AssetStatusService;
 use App\Services\SupplierService;
 // use Com\Tecnick\Barcode\Type\Square\QrCode;
 use Illuminate\Http\Request;
+use PHPUnit\TextUI\Help;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AssetController extends Controller
@@ -67,7 +70,7 @@ class AssetController extends Controller
                     $data = Supplier::where('name','LIKE',"%$search%")->limit(5)->get(["id","name"]);
                 break;
             case 'status':
-                    $data = AssetStatus::where('name','LIKE',"%$search%")->limit(5)->get(["id","name"]);
+                    $data = AssetStatus::where('name','LIKE',"%$search%")->limit(7)->get(["id","name"]);
                 break;
             case 'category':
                     $data = Category::where('name','LIKE',"%$search%")->limit(5)->get(["id","name"]);
@@ -104,10 +107,12 @@ class AssetController extends Controller
     }
 
     public function record(Asset $asset){
+        
+        $assetStatus = AssetStatus::get(['id','code','name']);
 
-        return $asset->load(['record','record.asset_status','record.user','accountability:asset_id,control_no']);
+        $asset->load(['record','record.asset_status','record.user','accountability:asset_id,control_no']);
 
-        return view('asset.record',compact('asset'));
+        return view('asset.record',compact('asset','assetStatus'));
 
     }
 
@@ -130,6 +135,16 @@ class AssetController extends Controller
                 break;
         }
         
+    }
+
+    public function changeStatus(Request $request){
+
+        // return $request;
+        $data = Asset::whereId($request->asset)->first();
+
+        return Helper::record($request->asset,$data->asset_status_id,$data->accountability->user_id,$request->remarks);
 
     }
+
+   
 }

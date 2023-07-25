@@ -33,7 +33,7 @@ class AccountabilityController extends Controller
 
            $data =  Accountability::storeAccount($request);
 
-           Helper::record($data->id,$data->asset_status_id,$data->user_id,'Asset Assigned');
+           Helper::record($data->id,$data->asset_status_id,$data->user_id,'The item was successfully assigned to '.$data->user->name);
 
            return $data;
 
@@ -43,13 +43,15 @@ class AccountabilityController extends Controller
 
     public function print($controlNo){
 
-    // return $accountability;
+        // return $accountability;
 
-    //  $dompdf =  PDF::loadView('print/accountability-form');
+        //  $dompdf =  PDF::loadView('print/accountability-form');
 
-    //  return $dompdf->stream("dompdf_out.pdf", array("Attachment" => false));
+        //  return $dompdf->stream("dompdf_out.pdf", array("Attachment" => false));
         
         $accountability = Accountability::where('control_no',$controlNo)->first();
+
+    //    return $accountability->user;
 
         $asset  = Accountability::where('control_no',$controlNo)->get();
         

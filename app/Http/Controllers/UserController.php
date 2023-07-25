@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Accountability;
+use App\Models\AssetStatus;
 use App\Models\Department;
 use App\Models\User;
 use App\Services\UserService;
@@ -74,7 +75,9 @@ class UserController extends Controller
 
     public function assign(User $user){
         
-        return view('user.accountability',compact('user'));
+        $assetStatus = AssetStatus::get(['id','name','code']);
+
+        return view('user.accountability',compact('user','assetStatus'));
 
     }
 

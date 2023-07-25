@@ -15,7 +15,8 @@ const Config = {
              <div class="dropdown-menu" style="font-size:11px">`
                 buttons.forEach(val => {
                         val.elementType=='button' || !val.hasOwnProperty('elementType')?
-                        btnHTML+=`<button
+                        btnHTML+=`<button 
+                                        ${ ((val.disabled)?'disabled':'') }      
                                         name="${val.name}"
                                         type="button"
                                         value="${val.value}"
