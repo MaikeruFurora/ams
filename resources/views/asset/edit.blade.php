@@ -86,13 +86,13 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="">Date Purchase</label>
-                                    <input type="text" class="form-control form-control-sm datepicker" name="date_purchase" id="" value="{{ $asset->date_purchase }}" maxlength="40">
+                                    <input type="text" class="form-control form-control-sm datepicker" name="date_purchase" id="" value="{{ date("m-d-Y",strtotime($asset->date_purchase)) }}" maxlength="40">
                                     @error('date_purchase') <small class="text-danger">{{ $message }}</small> @enderror
 
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="">Date Recieved</label>
-                                    <input type="text" class="form-control form-control-sm datepicker" name="date_recieve" id="" value="{{ $asset->date_recieve }}">
+                                    <input type="text" class="form-control form-control-sm datepicker" name="date_recieve" id="" value="{{ date("m-d-Y",strtotime($asset->date_recieve)) }}">
                                     @error('date_recieve') <small class="text-danger">{{ $message }}</small> @enderror
 
                                 </div>
@@ -126,7 +126,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="">UOM</label>
-                                    <input type="number" class="form-control form-control-sm" name="uom" id="" min="1" max="20" value="{{ $asset->uom }}">
+                                    <input type="number" class="form-control form-control-sm" name="uom" id=""maxlength="10" value="{{ $asset->uom }}">
                                     @error('uom') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
                             </div>
@@ -248,19 +248,21 @@
 
     Config.FormStatus.on('submit',function(e){
         e.preventDefault()
-        $.ajax({
-            url:Config.FormStatus.attr('action'),
-            type:'POST',
-            data: new FormData(this),
-            processData: false,
-            contentType: false,
-            cache: false,
-        }).done(function(data){
-            Config.FormStatus[0].reset();
-            $("#modalStatus").modal("hide")
-        }).fail(function (jqxHR, textStatus, errorThrown) {
-            console.log(errorThrown);
-        })
-        })
+            $.ajax({
+                url:Config.FormStatus.attr('action'),
+                type:'POST',
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                cache: false,
+            }).done(function(data){
+                Config.FormStatus[0].reset();
+                $("#modalStatus").modal("hide")
+            }).fail(function (jqxHR, textStatus, errorThrown) {
+                console.log(errorThrown);
+            })
+    })
+
+    Config.datePick()
 </script>
 @endsection

@@ -17,8 +17,8 @@ class Asset extends Model
 
     public $guarded=[];
 
-    public function pullout(){
-        return $this->hasOne(Pullout::class);
+    public function pullout_detail(){
+        return $this->hasMany(PulloutDetail::class);
     }
 
     // protected $fillable=[

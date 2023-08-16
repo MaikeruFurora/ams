@@ -22,7 +22,7 @@
     </style>
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
 </head>
-<body onload="window.print()">
+<body >
 <div class="row">
   @foreach ($assets as $item)
   <div class="card ml-4 mt-2 text-center" style="width: 18rem;">

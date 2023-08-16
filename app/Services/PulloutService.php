@@ -16,7 +16,7 @@ class PulloutService{
         $length = $request->query('length', 25);
         $order = $request->query('order', array(1, 'asc'));        
         $filter = $search['value'];
-        $query = Pullout::with(['asset','asset.asset_status']);
+        $query = Pullout::with(['pullout_detail','pullout_detail.asset','pullout_detail.asset.asset_status']);
         if (!empty($filter)) {  
             $query->where('asset.item_name', 'like', '%'.$filter.'%'); 
             $query->where('pullout_no', 'like', '%'.$filter.'%'); 
@@ -34,13 +34,12 @@ class PulloutService{
         $audit = $query->get();
         foreach ($audit as $value) {
             $json['data'][] = [
-                'id'           => $value->id,
-                'pullout_no'   => $value->pullout_no,
-                'date_recieved'=> $value->date_recieved,
-                'date_return'  => $value->date_return,
-                'item_name'    => $value->asset->item_name,
-                'asset_code'   => $value->asset->asset_code,
-                'remarks'      => $value->remarks,
+                'id'             => $value->id,
+                'pullout_no'     => $value->pullout_no,
+                'date_recieved'  => !empty($value->date_recieved)?date("m/d/Y",strtotime($value->date_recieved)):'',
+                'pullout_detail' => $value->pullout_detail,
+                'created_at'     => $value->created_at->format("m/d/Y"),
+                'remarks'        => $value->remarks,
             ];
         }
         return $json;

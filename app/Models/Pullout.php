@@ -12,9 +12,11 @@ class Pullout extends Model
 
     protected $guarded=[];
 
-    public function asset(){
+   
 
-        return $this->belongsTo(Asset::class);
+    public function pullout_detail(){
+
+        return $this->hasMany(PulloutDetail::class);
 
     }
 
@@ -33,9 +35,7 @@ class Pullout extends Model
     public function requestInput($request){
         return [
             'pullout_no'    =>$request->pullout_no,
-            'asset_id'      =>$request->asset,
             'remarks'       =>$request->remarks,
-            'date_return'   =>$request->date_return,
             'date_recieved' =>$request->date_recieved,
         ];
     }

@@ -7,24 +7,13 @@
 <link href="{{ asset('plugins/datatables/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('plugins/datatables/searchBuilder.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('plugins/datatables/dataTables.dateTime.min.css') }}" rel="stylesheet" type="text/css" />
-<style>
-    .tr-head td{
-    padding: 3px !important;
-    margin: 0 !important;
-    text-align: center;
-    }
 
-    .adjust tr td{
-    padding: 5px !important;
-    margin: 0 !important;
-    }
-    
-</style>
 @endsection
 @section('content')
      <!-- Page-Title -->
      <x-page-title title="Assets">
         <a href="{{ route('authorize.asset.create') }}" class="btn btn-sm btn-primary"><i class="fas fa-plus-circle mr-1"></i> Create New</a>
+        <button class="btn btn-primary btn-sm" type="button" data-toggle="canvas" data-target="#bs-canvas-right" aria-expanded="false" aria-controls="bs-canvas-right">&#9776;</button>
     </x-page-title>
    <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
@@ -33,11 +22,12 @@
                     <div class="table-responsive">
                         <table cellspacing="0" id="datatable" class="table table-bordered st-table table-hover dt-responsive nowrap adjust" 
                             data-url="{{ route('authorize.asset.list') }}" style="width: 100%">
-                            <thead class=" st-header-table text-center">
+                            <thead class=" st-header-table">
                                 <tr class="tr-head">
-                                    <td rowspan="2" width="3%"></td>
+                                    <td rowspan="2" width="5%"></td>
+                                    <td rowspan="2" width="5%"></td>
                                     <td rowspan="2" width="5%">Action</td>
-                                    <td rowspan="2">Asset Code</td>
+                                    <td rowspan="2" width="5%">Asset Code</td>
                                     <td class="border">Status</td>
                                     <td class="border">Category</td>
                                     <td class="border">Sub Category</td>
@@ -56,21 +46,6 @@
                                     <td></td>
                                 </tr>
                             </thead>
-                            {{-- <tfoot class="st-header-table adjust">
-                                <tr>
-                                    <th>Asset Code</th>
-                                    <th>Category</th>
-                                    <th>Sub Category</th>
-                                    <th>Item Nname</th>
-                                    <th>Serial Number</th>
-                                    <th>Purchase Order</th>
-                                    <th>Purchase Amount</th>
-                                    <th>Actual Amount</th>
-                                    <th>Date Purchase</th>
-                                    <th>Date Rcieve</th>
-                                    <th>Action</th>
-                                </tr>
-                            </tfoot> --}}
                         </table>
                     </div>
                 </div>
@@ -93,7 +68,15 @@
            </div> 
         </div>
     </div> 
-
+    <div id="bs-canvas-right" class="bs-canvas bs-canvas-anim bs-canvas-right position-fixed bg-light h-100">
+        <header class="bs-canvas-header p-1 bg-primary overflow-auto">
+            <button type="button" class="bs-canvas-close float-left close" aria-label="Close"><span aria-hidden="true" class="text-light">&times;</span></button>
+            <h4 class="d-inline-block text-light mb-0 float-right">BARCODE</h4>
+        </header>
+        <div class="bs-canvas-content px-3 py-5">
+            ...
+        </div>    
+    </div>
 @endsection
 @section('moreJs')
    <!-- Required datatable js -->
@@ -162,7 +145,7 @@
             },
             initComplete: function () {
                 this.api()
-                    .columns([3,4,5])
+                    .columns([4,5,6])
                     .every(function () {
                         var column = this;
                         var select = $('<select class="custom-select custom-select-sm m-0" style="font-size:10px"><option value="">All</option></select>')
@@ -181,12 +164,20 @@
                     });
             },
             columns:[
+                {
+                    orderable:false,
+                    searchable: false,
+                    data:null,
+                    render: function (data, type, row, meta) {
+                        return `<span class="ml-4 text-left">${(meta.row + meta.settings._iDisplayStart + 1)}</span>`;
+                    }
+                },
                 { 
                     orderable:false,
                     searchable: false,
                     data:null,
                     render:function(data){
-                        return `<input type="checkbox" class="form-check ml-4" style="margin-right:0px" value="${data.id}">`
+                        return `<input type="checkbox" class="form-check" style="margin-right:0px" value="${data.id}">`
                     }
                 },
                 { 
@@ -262,7 +253,9 @@
         
         $("#GenerateForm").on('click',function(){
             $("#GenerateForm").find('input[name=asset]').val(asset)
-            console.log($(this).val());
+            tbl.ajax.reload()
+            cardFooter.hide()
+            asset.length=0
         })
 
 

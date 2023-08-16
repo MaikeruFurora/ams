@@ -17,7 +17,7 @@ class AccountabilityController extends Controller
 
             $data = array();
 
-            for ($i=0; $i < count($assets); $i++) { 
+            for ($i=0; $i < count($assets); $i++) {
                 $data[] = Accountability::create([
                     'asset_id'      => $assets[$i],
                     'user_id'       => $request->input('user'),

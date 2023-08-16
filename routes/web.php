@@ -7,6 +7,7 @@ use App\Http\Controllers\AMSController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\PulloutController;
+use App\Http\Controllers\ReturnAssetController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\SupplierController;
@@ -49,7 +50,12 @@ Route::middleware(['auth:web','preventBackHistory','auth.user'])->name('authoriz
     Route::get('pullout',  [PulloutController::class, 'index'])->name('pullout');
     Route::post('pullout/store',  [PulloutController::class, 'store'])->name('pullout.store');
     Route::get('pullout/list',  [PulloutController::class, 'list'])->name('pullout.list');
-    Route::get('pullout/recieve',  [PulloutController::class, 'recieve'])->name('pullout.recieve');
+    Route::post('pullout/recieve',  [PulloutController::class, 'recieve'])->name('pullout.recieve');
+    Route::get('pullout/form/{pullout}',  [PulloutController::class, 'pulloutForm'])->name('pullout.form');
+
+    //return asset
+    Route::get('return/{pullout}',  [ReturnAssetController::class, 'index'])->name('return');
+    Route::post('return/store',  [ReturnAssetController::class, 'store'])->name('return.store');
 
     //api for status
     Route::get('status/list',[StatusController::class,'list'])->name('status.list');

@@ -4,8 +4,7 @@
 <link href="{{ asset('plugins/datatables/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 <!-- Responsive datatable examples -->
 <link href="{{ asset('plugins/datatables/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
-<!-- Alertify css -->
-<link href="{{ asset('plugins/alertify/css/alertify.css') }}" rel="stylesheet" type="text/css">
+
 <link href="{{ asset('plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css">
 
 @endsection
@@ -50,7 +49,7 @@
     <div class="col-lg-12 col-md-12 col-sm-12">
         <form id="FormAsset" action="{{ route('authorize.asset.store') }}" autocomplete="off">@csrf
             <div class="card p-0">
-                <div class="card-header p-2 text-white" style="background: #76b8db">
+                <div class="card-header p-2 card-sky" >
                     <b>Form</b>
                 </div>
                 <div class="card-body pb-2">
@@ -60,7 +59,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer p-1" style="background: #76b8db">
+                <div class="card-footer p-1 card-sky">
                     <div class="float-right">
                         <button type="button" class="btn btn-sm btn-warning py-1"><i class="fas fa-redo-alt"></i> Reset</button>
                         <button type="submit" class="btn btn-sm btn-primary py-1"><i class="fas fa-paper-plane"></i> Submit</button>
@@ -80,8 +79,7 @@
    <!-- Responsive examples -->
    <script src="{{ asset('plugins/datatables/dataTables.responsive.min.js') }}"></script>
    <script src="{{ asset('plugins/datatables/responsive.bootstrap4.min.js') }}"></script>
-   <!-- Alertify js -->
-   <script src="{{ asset('plugins/alertify/js/alertify.js') }}"></script>
+  
    <script src="{{ asset('plugins/select2/select2.min.js') }}"></script>
    
     <script>
@@ -256,7 +254,7 @@
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label for="">UOM</label>
-                                                <input type="number" class="form-control form-control-sm" name="uom[]" id="" min="1" max="20">
+                                                <input type="text" class="form-control form-control-sm" name="uom[]" id="" min="1" max="20">
                                             </div>
                                         </div>
                                     </div>
@@ -317,10 +315,7 @@
                 $(this).select2(Config.selectData(autocompleteURL.val().split('Sample')[0]+'status'));
             });
             $('.amount').number( true, 4 );
-            $(".datepicker").datepicker({
-            toggleActive: true,
-            autoclose: true
-        })
+            Config.datePick(true)
         }
         
         $("select[name=category]").select2(Config.selectData(autocompleteURL.val().split('Sample')[0]+'category'))

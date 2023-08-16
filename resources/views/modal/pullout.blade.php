@@ -1,6 +1,11 @@
-<form id="FormPullout" method="POST" action="{{ route("authorize.pullout.store") }}" autocomplete="off">
+<form 
+    id="FormPullout"
+    method="POST"
+    action="{{ route("authorize.pullout.store") }}"
+    data-url="{{ route('authorize.pullout.form',['pullout'=>'sample']) }}"
+    autocomplete="off">
     <div class="modal fade" id="modalstatusChange" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="modalstatusChangeLabel" aria-hidden="true">
-        <div class="modal-dialog modal-md">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header px-1 py-1">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -8,24 +13,20 @@
                     </button>
                 </div>
                 <div class="modal-body pb-1">@csrf
-                    <input type="hidden" name="id">
-                    <input type="hidden" name="asset">
-                    <input type="hidden" name="user">
-                    <div class="form-group">
-                        <label for="">Asset Code</label>
-                        <input type="text" name="asset_code" class="form-control form-control-sm" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label for="">Status</label>
-                        <select name="status" class="custom-select custom-select-sm">
-                            @foreach ($assetStatus as $item)
-                                <option value="{{ $item->id }}" >{{ $item->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <table class="table adjust table-sm table-bordered" id="pulloutAssetTbl">
+                        <thead class="st-header-table">
+                            <tr>
+                                <td>#</td>
+                                <td>Asset Code</td>
+                                <td>Item Name</td>
+                                <td>Status</td>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                     <div class="form-group">
                         <label for="status">Remarks</label>
-                        <textarea name="remarks" id="" cols="30" rows="5" class="form-control"></textarea>
+                        <textarea name="remarks" id="" cols="30" rows="5" maxlength="500" class="form-control"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer p-1">

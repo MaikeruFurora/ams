@@ -21,6 +21,8 @@
         <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
+        <!-- Alertify css -->
+        <link href="{{ asset('plugins/alertify/css/alertify.css') }}" rel="stylesheet" type="text/css">
         <style>
             .st-table{
                 font-size: 11px;
@@ -33,16 +35,31 @@
                 color: white
             }
 
+            .tr-head td{
+                padding: 3px !important;
+                margin: 0 !important;
+                text-align: center; 
+                vertical-align: middle;
+            }
+
+            .adjust tr td{
+                padding: 5px !important;
+                margin: 0 !important;
+                text-align: center; 
+                vertical-align: middle;
+            }
+
         </style>
 
     </head>
 
 
     <body>
-        {{-- @if (!(auth()->user()->type)) onmousemove="BaseModel.checkControl()" @endif --}}
+         <!-- Overlay, must be placed direct after the opening body tag. -->
+         <div class="bs-canvas-overlay bs-canvas-anim bg-dark position-fixed w-100 h-100"></div>
         <!-- Loader -->
         @include('layout.preloader')
-
+        
         <div class="header-bg">
             <!-- Navigation Bar-->
             <header id="topnav">
@@ -168,6 +185,8 @@
         <script src="{{ asset('plugins/jquery-number/jquery.number.min.js') }}"></script>
         <script src="{{ asset('plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
         <script src="{{ asset('assets/js/global.js') }}"></script>
+        <!-- Alertify js -->
+        <script src="{{ asset('plugins/alertify/js/alertify.js') }}"></script>
         @yield('moreJs')
         
         <!-- App js -->

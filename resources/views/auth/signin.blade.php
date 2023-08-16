@@ -50,7 +50,7 @@
                             </div>
                         </div>
                     </div> --}}
-                    <div class="col-lg-5 offset-lg-3">
+                    <div class="col-lg-4 offset-lg-4">
                         @if (session()->has('msg'))
                             <div class="alert alert-{{ session()->get('action') ?? 'success' }}" role="alert">
                                 <i class="fas fa-exclamation-triangle"></i> {{ session()->get('msg') }}
@@ -59,9 +59,9 @@
                         <div class="card mb-0">
                             <div class="card-body">
                                 <div class="p-2">
-                                    <h4 class="text-muted float-right font-18 mt-4">Sign In</h4>
+                                    <h6 class="text-muted float-right mt-4">Sign In</h6>
                                     <div>
-                                        <a href="index.html" class="logo logo-admin"><img src="{{ asset('assets/images/logo.pngs') }}" height="50" alt="logo"></a>
+                                        <a href="index.html" class="logo logo-admin"><img src="{{ asset('assets/images/logo.png') }}" height="50" alt="logo"></a>
                                     </div>
                                 </div>
         

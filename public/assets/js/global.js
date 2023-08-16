@@ -11,7 +11,7 @@ const Config = {
         // {name:null,text:null,value:null,icon:null,color:null,id:null}
         let btnHTML=`
         <div class="btn-group btn-group-sm" role="group text-center">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="font-size:11px">Option</button>
+            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="font-size:11px;background:#84bdd9;color:white">Option</button>
              <div class="dropdown-menu" style="font-size:11px">`
                 buttons.forEach(val => {
                         val.elementType=='button' || !val.hasOwnProperty('elementType')?
@@ -24,7 +24,7 @@ const Config = {
                                         ${val.icon} ${val.text}
                                     </button>`
                         :
-                        btnHTML+=`<a class="dropdown-item border" href="${val.url}">${val.icon} ${val.text}</a>`
+                        btnHTML+=`<a class="dropdown-item border" href="${ (val.hasOwnProperty('disabled'))?((val.disabled)?'':val.url):val.url }">${val.icon} ${val.text}</a>`
                 });
         btnHTML+=`</div>
         </div>`
@@ -62,6 +62,22 @@ const Config = {
             .appendTo("body");    // add iframe to the DOM to cause it to load the page
     },
 
+    datePick:(disabled=false)=>{
+        if (disabled) {
+            $(".datepicker").datepicker({
+                format: 'mm-dd-yyyy',
+                autoclose:true,
+                endDate: "today",
+                maxDate: Config.today
+            })
+        }else{
+            $(".datepicker").datepicker({
+                format: 'mm-dd-yyyy',
+                autoclose:true,
+            })
+        }
+    },
+
     date:      new Date(),
 
     tableData:    $("table[id=datatable]"),
@@ -70,7 +86,7 @@ const Config = {
 
     FormStatus:   $("#FormStatus"),
 
-    token:        $("meta[name=_token]").attr('content'),    
+    token:        $("meta[name=_token]").attr('content'),  
 
 }
 $('input').on('click',function(){
@@ -82,3 +98,5 @@ $('.amount').number( true, 4 );
 $('textarea').on('click',function(){
     $(this).select();
 })
+
+

@@ -39,7 +39,7 @@ class DepartmentController extends Controller
         $length = $request->query('length', 25);
         $order = $request->query('order', array(1, 'asc'));        
         $filter = $search['value'];
-        $query = Department::select('users.name as head','departments.name','sttus','departments.id')->leftjoin('users','departments.head_id','users.id');
+        $query = Department::with('user');
         if (!empty($filter)) {  $query->where('name', 'like', '%'.$filter.'%'); }
         $recordsTotal = $query->count();
         $query->take($length)->skip($start);
@@ -54,7 +54,8 @@ class DepartmentController extends Controller
             $json['data'][] = [
                 'name' =>$value->name,
                 'head' =>$value->head,
-                'id'   =>$value->id
+                'id'   =>$value->id,
+                'masterData'=>$value
             ];
         }
         return $json;

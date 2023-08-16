@@ -99,7 +99,7 @@
                     { 
                         data:null,
                         render:function(data){
-                            return 0
+                            return data.masterData.user.length;
                         }
                     },
                     { 

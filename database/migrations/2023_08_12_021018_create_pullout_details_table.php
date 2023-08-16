@@ -13,16 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('records', function (Blueprint $table) {
+        Schema::create('pullout_details', function (Blueprint $table) {
             $table->id();
-
+            $table->unsignedBigInteger('pullout_id');
+            $table->foreign('pullout_id')->references('id')->on('pullouts');
             $table->unsignedBigInteger('asset_id');
             $table->foreign('asset_id')->references('id')->on('assets');
-            $table->string('user_involved',55)->nullable();
-            $table->string('status',55)->nullable();
-            $table->text('remarks',200)->nullable();
-            $table->timestamps();
+            $table->string('pullout_status',55)->nullable();
+            $table->string('return_status',55)->nullable();
+            $table->text('return_remarks')->nullable();
+            $table->date('return_date')->nullable();
 
+            $table->timestamps();
         });
     }
 
@@ -33,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('records');
+        Schema::dropIfExists('pullout_details');
     }
 };

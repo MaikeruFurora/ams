@@ -27,16 +27,20 @@
                             data-url-edit="{{ route("authorize.user.edit",[0]) }}"
                             data-url-assign="{{ route("authorize.user.assign",[0]) }}"
                             >
-                            <thead class="st-header-table">
-                                <tr>
-                                    <th></th>
-                                    <th>Name</th>
-                                    <th>Title</th>
-                                    <th>Department</th>
-                                    <th>Contact No.</th>
-                                    <th>Username</th>
-                                    <th>Status</th>
-                                    <th width="5%">Action</th>
+                            <thead class=" st-header-table text-center">
+                                <tr class="tr-head">
+                                    <th rowspan="2"></th>
+                                    <th rowspan="2">Name</th>
+                                    <th class="border">Title</th>
+                                    <th class="border">Department</th>
+                                    <th class="border" rowspan="2">Contact No.</th>
+                                    <th rowspan="2">Username</th>
+                                    <th rowspan="2">Status</th>
+                                    <th rowspan="2" width="5%">Action</th>
+                                </tr>
+                                <tr class="tr-head">
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                             </thead>
                         </table>
@@ -57,13 +61,31 @@
     <script>
         let   assignedAccountTable  = $("#assignedAccountTable")
         const tbl = Config.tableData.DataTable({
-            "serverSide": true,
-            paging:true,
-            "ajax": {
-                url: Config.tableData.attr("data-url"), 
-                method: "get"
-            },
+            ordering:false,
+            ajax: Config.tableData.attr("data-url"),
             // order: [[0, 'desc']],
+            initComplete: function () {
+                this.api()
+                    .columns([2,3])
+                    .every(function () {
+                        var column = this;
+                        var select = $('<select class="custom-select custom-select-sm m-0" style="font-size:10px"><option value="">All</option></select>')
+                            .appendTo($(column.header()).empty())
+                            .on('change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                column.search(val ? '^' + val + '$' : '', true, false).draw();
+                            });
+                        column
+                            .data()
+                            .unique()
+                            .sort()
+                            .each(function (d, j) {
+                                if (d!=null) {
+                                    select.append('<option value="' + d + '">' + d + '</option>');
+                                }
+                            });
+                    });
+            },
             columns:[
                     { 
                         visible:false,
@@ -76,7 +98,7 @@
                         data:'job_title'
                     },
                     { 
-                        data:'dep_name'
+                        data:'department'
                     },
                     { 
                         data:'contact_no'

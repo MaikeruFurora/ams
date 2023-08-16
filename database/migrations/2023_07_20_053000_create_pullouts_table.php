@@ -15,11 +15,8 @@ return new class extends Migration
     {
         Schema::create('pullouts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('asset_id');
-            $table->foreign('asset_id')->references('id')->on('assets');
             $table->string('pullout_no');
             $table->text('remarks');
-            $table->date('date_return')->nullable();
             $table->date('date_recieved')->nullable();
             $table->timestamps();
         });

@@ -14,12 +14,17 @@
     .table.dataTable td {
         padding: 5px
     }
+
+    .red {
+        background-color: red !important;
+    }
 </style>
 @endsection
 @section('content')
      <!-- Page-Title -->
      <x-page-title title="Assign Accountability">
         <a href="{{ route('authorize.user') }}" class="btn btn-sm btn-primary"><i class="fas fa-arrow-left"></i> Back</a>
+        <button class="btn btn-secondary btn-sm mr-2" name="pullout" disabled><i class="fas fa-sync"></i> Pullout</button>
     </x-page-title>
         <div class="col-lg-12">
             <div class="card">
@@ -31,7 +36,18 @@
                         <li class="nav-item" role="presentation">
                           <button class="nav-link active" id="profile-tab" data-toggle="tab" data-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Accountability</button>
                         </li>
-                       
+                        <li class="nav-item p-1 float-right" role="presentation">
+                            <form id="accountabilityForm" action="{{ route('authorize.accountability.print',['controlNo'=>'Sample']) }}">
+                                <div class="input-group input-group-sm">
+                                    <select name="control_no" id="" class="custom-select custom-select-sm">
+                                        <option value=""></option>
+                                    </select>
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2">Print</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </li>
                       </ul>
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade " id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -113,13 +129,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab" style="font-size: 13px">
                             <div class="table-responsive mt-3">
                                 <table id="assignedAccountTable" class="table table-bordered table-sm"
                                     data-url="{{ route("authorize.user.assign.list") }}"
                                     data-status-url={{ route('authorize.status.list') }} style="width: 100%">
                                     <thead class="text-center text-white st-header-table">
                                         <tr>
+                                            <th width="1%"></th>
                                             <th></th>
                                             <th width="10%">Control No.</th>
                                             <th width="10%">Asset-Code</th>
@@ -128,22 +145,11 @@
                                             <th>Brand/Model</th>
                                             <th width="10%">Date Issued</th>
                                             <th width="">Status</th>
-                                            <th width="7%">Action</th>
+                                            {{-- <th width="7%">Action</th> --}}
                                         </tr>
                                     </thead>
                                 </table>
-                                <div class="col-3">
-                                    <form id="accountabilityForm" action="{{ route('authorize.accountability.print',['controlNo'=>'Sample']) }}">
-                                        <div class="input-group input-group-sm">
-                                            <select name="control_no" id="" class="custom-select custom-select-sm">
-                                                <option value=""></option>
-                                            </select>
-                                            <div class="input-group-append">
-                                                <button type="submit" class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2">Print</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div> 
+                                
                             </div>
                         </div>
                     </div>
@@ -165,6 +171,7 @@
         const assetArr              = []
         const asset                 = []
         const controlNoList         = []
+        const assetToPull           = []
         const myCheckoutTbl         = $("#myCheckoutTbl")
         let   FormAssign            = $("#FormAssign")
         let   assignedAccountTable  = $("#assignedAccountTable")
@@ -174,6 +181,7 @@
         let   _hold                 = `<option>Select Control No.</option>`
         let   FormPullout           = $("#FormPullout")
         // cardFooter.hide()
+        
         let tbl = Config.tableData.DataTable({
             ordering: false,
             ajax: {
@@ -280,11 +288,11 @@
                 contentType: false,
                 cache: false,
             }).done(function(data){
-                tbl.ajax.reload()
                 assignTbl.ajax.reload()
                 assetArr.length=0
-                ,FormAssign[0].reset()
+                FormAssign[0].reset()
                 myCheckout()
+                tbl.ajax.reload()
             }).fail(function (jqxHR, textStatus, errorThrown) {
                 console.log(errorThrown);
             })
@@ -310,6 +318,10 @@
             $($.fn.dataTable.tables( true ) ).DataTable().columns.adjust().draw();
             console.log('click');
         } ); 
+
+
+
+        /// ACCOUNTABLE
     
         accountabilityForm.on('submit',function(e){
             e.preventDefault()
@@ -318,7 +330,21 @@
             Config.loadToPrint(url)
         })
 
-       
+        $(document).on('change','input[type="checkbox"]',function(){
+            if($(this).is(":checked")){
+                let data =assignTbl.row( $(this).closest('tr') ).data();
+                assetToPull.push(data)
+                assetToPull.find(val=>val.asset_code==$(this).val())
+            }else{
+                let index = assetToPull.indexOf($(this).val())
+                assetToPull.splice(index,1);
+            }
+
+            $("button[name=pullout]").attr("disabled",!assetToPull.length>0)
+
+        })
+
+
         
         let assignTbl  = assignedAccountTable.DataTable({
             ordering: false,
@@ -342,9 +368,16 @@
                     $(td).css('padding', '5px')
                 }
             }],
+            createdRow:function( row, data, dataIndex ) {
+                if (data.pullout_detail.length>0) {
+                    if (data.pullout_detail[0].return_date==null) {
+                        $(row).css('background','#badfd7');
+                    }
+                }
+            },
             initComplete: function() {
                 var dd = assignTbl
-                    .columns(1)
+                    .columns(2)
                     .data()
                     .eq(0)      // Reduce the 2D array into a 1D array of data
                     .sort()       // Sort data alphabetically
@@ -358,6 +391,17 @@
                     selectControlNo.html(_hold)
             },
             columns:[
+                { 
+                    orderable:false,
+                    searchable: false,
+                    data:null,
+                    render:function(data){
+                        return `<input type="checkbox" class="form-check" value="${data.id}" ${
+                            (data.pullout_detail.length>0)
+                                ?((data.pullout_detail[0].return_date==null)?'disabled':''
+                            ):''}>`
+                    }
+                },
                 { 
                     orderable:false,
                     searchable: false,
@@ -385,37 +429,40 @@
                 { 
                     data:'status'
                 },
-                {
-                    data:null,
-                    render:function(data){
-                        // console.log(data.status_code=='PULLOUT');
-                        return Config.dropdown([
-                                {
-                                    text:'Pullout',
-                                    name:'pullout',
-                                    icon:'<i class="fas fa-sync-alt"></i>',
-                                    elementType:'button',
-                                    value:data.asset_id,
-                                    disabled:data.status_code=='PULLOUT'
-                                },
-                            ])
-                    }
-                }
+                // {
+                //     data:null,
+                //     render:function(data){
+                //         // console.log(data.status_code=='PULLOUT');
+                //         return Config.dropdown([
+                //                 {
+                //                     text:'Pullout',
+                //                     name:'pullout',
+                //                     icon:'<i class="fas fa-sync-alt"></i>',
+                //                     elementType:'button',
+                //                     value:data.asset_id,
+                //                     disabled:data.status_code=='PULLOUT'
+                //                 },
+                //             ])
+                //     }
+                // }
             ]
         })
 
 
-        const controlnoLists = (data) =>{
-
-            
-        }
-
-        $(document).on('click','button[name=pullout]',function(){
-            let data =assignTbl.row( $(this).closest('tr') ).data();
-            console.log(data);
-            FormPullout.find("input[name=asset]").val($(this).val())
-            FormPullout.find("input[name=user]").val(data.user_id)
-            FormPullout.find("input[name=asset_code]").val(data.asset_code)
+        $('button[name=pullout]').on('click','',function(){
+            console.log(assetToPull);
+            let  _hold=''
+            assetToPull.forEach((element,i) => {
+                _hold+=`<tr>
+                            <td>
+                                ${++i}<input name="asset[]" value="${element.asset_id}" type="hidden">
+                            </td>
+                            <td>${element.asset_code}</td>
+                            <td>${element.item_name}</td>
+                            <td>${element.status}</td>
+                        </tr>`
+            });
+            $("#pulloutAssetTbl").find('tbody').html(_hold)
             $("#modalstatusChange").modal("show")
         })
 
@@ -432,7 +479,11 @@
                 console.log(data);
                 FormPullout[0].reset()
                 assignTbl.ajax.reload()
+                assetToPull.length=0
+                Config.loadToPrint()
+                $('button[name=pullout]').attr('disabled',true)
                 $("#modalstatusChange").modal("hide")
+                Config.loadToPrint(FormPullout.attr('data-url').split('sample')[0]+data)
             }).fail(function(a,b,c){
                 console.log(a,b,c);
             })

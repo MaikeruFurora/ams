@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helper\Helper;
 use App\Models\Asset;
 use App\Models\Pullout;
+use App\Models\PulloutDetail;
 use App\Services\PulloutService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -32,10 +33,20 @@ class PulloutController extends Controller
 
     public function store(Request $request){
 
-        Asset::whereId($request->asset)->update(['asset_status_id'=>$request->status]);
+        // Asset::whereId($request->asset)->update(['asset_status_id'=>$request->status]);
         
-        Pullout::store($request);
+        $pullout = Pullout::store($request);
 
+        
+        foreach ($request->asset as $key => $value) {
+            PulloutDetail::create([
+                'pullout_id'     => $pullout->id,
+                'asset_id'       => $value,
+                'pullout_status' => '',
+            ]);
+        }
+
+        return $pullout->id;
         return Helper::record($request->asset,$request->status,$request->user,$request->remarks);
 
     }
@@ -48,12 +59,18 @@ class PulloutController extends Controller
 
         if ($pullout) {
             $res =  $pullout->update(['date_recieved'=>$date]);
-           if ($res) {
-            return Helper::record($pullout->asset->id,$pullout->asset->asset_status_id,null,'Pullout Recieved at'. $date);
-           }
+        //    if ($res) {
+        //     return Helper::record($pullout->asset->id,$pullout->asset->asset_status_id,null,'Pullout Recieved at'. $date);
+        //    }
         }else{
             return abort(400);
         }
+
+    }
+
+    public function pulloutForm(Pullout $pullout){
+
+        return view('print.pullout-form',compact('pullout'));
 
     }
 }
